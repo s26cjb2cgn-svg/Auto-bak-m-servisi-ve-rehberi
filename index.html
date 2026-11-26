@@ -249,5 +249,4 @@ if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Çevrimdışı destek etkinleştirilemedi:',err)));
 }
 $('maintDate').value=new Date().toISOString().slice(0,10);render();renderExpertiseFirms();
-</script>
 </body></html>
