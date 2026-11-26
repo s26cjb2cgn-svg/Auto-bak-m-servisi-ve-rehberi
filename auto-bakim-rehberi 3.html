@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101513">
+<title>Auto Bakım Rehberi</title>
+<style>
+:root{--bg:#0b100e;--panel:#151d19;--panel2:#1b2721;--line:#2b3b32;--text:#f2f7f3;--muted:#9aaba0;--lime:#c7f36b;--orange:#ffbd59;--red:#ff6f6f}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#263d2d 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:850px;margin:auto;padding:22px 16px 50px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:12px;letter-spacing:2px;color:var(--lime);font-weight:800}.pill{border:1px solid var(--line);border-radius:30px;padding:7px 11px;color:var(--muted);font-size:12px}
+.hero{margin:22px 0 18px;padding:23px;border-radius:24px;background:linear-gradient(125deg,#26392c,#131b17 65%);border:1px solid #3a5141;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-30px;top:18px;width:190px;height:100px;border:2px solid #a8d85a33;border-radius:100% 20% 50% 20%;transform:skewX(-25deg)}
+.eyebrow{color:var(--lime);font-size:11px;letter-spacing:2px;font-weight:800}.hero h1{font-size:clamp(27px,6vw,42px);line-height:1.04;margin:10px 0;max-width:490px}.hero p{color:#bdcabe;margin:0;max-width:440px}.hero strong{color:var(--lime)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:24px 0 12px}.sectionhead h2{font-size:17px;margin:0}.sub{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.card{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:15px}.metric{font-size:26px;font-weight:850;letter-spacing:-1px}.metric small{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:0}.label{font-size:12px;color:var(--muted);margin-top:5px}.icon{font-size:20px;margin-bottom:8px}
+button,.btn{border:0;border-radius:12px;padding:12px 15px;background:var(--lime);color:#172014;font-weight:800;font-size:14px;cursor:pointer}.btn.secondary,button.secondary{background:#27352d;color:var(--text);border:1px solid var(--line)}button.danger{background:#422626;color:#ffc0c0}
+.vehicle{display:flex;align-items:center;justify-content:space-between;gap:12px}.vehicle h3{margin:4px 0;font-size:18px}.vehicle p{margin:0;color:var(--muted);font-size:12px}.tag{font-size:11px;color:var(--lime);border:1px solid #56713d;padding:5px 8px;border-radius:20px}
+form{display:grid;gap:11px}label{font-size:12px;color:var(--muted);display:grid;gap:6px}input,select{width:100%;background:#0e1511;color:var(--text);border:1px solid #35483b;border-radius:11px;padding:12px;font:inherit;min-width:0}input:focus,select:focus{outline:2px solid #9ecb55}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.record{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.record:last-child{border:0}.record b{font-size:14px}.record small{display:block;color:var(--muted);margin-top:3px}.status{font-size:11px;border-radius:20px;padding:5px 8px;white-space:nowrap;height:max-content}.ok{background:#203b29;color:#c7f36b}.soon{background:#47351e;color:#ffcf80}.late{background:#482525;color:#ff9b9b}
+.empty{color:var(--muted);font-size:13px;padding:14px 0}.notice{font-size:11px;color:var(--muted);line-height:1.5;margin-top:18px}.hidden{display:none!important}
+@media(max-width:520px){.grid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.hero{padding:20px}.metric{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top"><div><div class="brand">AUTO BAKIM REHBERİ</div><div class="sub">Aracının bakım kontrol merkezi</div></div><div class="pill">ÜCRETSİZ BETA</div></div>
+ <section class="hero"><div class="eyebrow">ARACININ KONTROLÜ SENDE</div><h1>Bakımını takip et.<br><strong>Yoluna güvenle devam et.</strong></h1><p>Araçlarını tek yerde yönet, yaklaşan bakımları ve servis geçmişini takip et.</p></section>
+ <div class="sectionhead"><h2>Garajım</h2><span class="sub" id="vehicleCount">0 araç</span></div>
+ <div id="vehicleList" class="grid"></div>
+ <div class="sectionhead"><h2>Aracını garaja ekle</h2><span class="sub">Marka ve versiyon seç</span></div>
+ <section class="card">
+ <form id="vehicleForm">
+  <label>Marka<select id="make" required><option value="">Marka seç</option></select></label>
+  <label>Model serisi<select id="model" required disabled><option value="">Önce marka seç</option></select></label>
+  <label>Motor / versiyon<select id="trim" required disabled><option value="">Önce model seç</option></select></label>
+  <div class="row"><label>Model yılı<input id="year" type="number" min="1970" max="2027" placeholder="Örn. 2018" required></label><label>Yakıt<select id="fuel"><option>Benzin</option><option>Dizel</option><option>Hibrit</option><option>Elektrik</option><option>LPG</option></select></label></div>
+  <label>Mevcut kilometre<input id="km" type="number" min="0" placeholder="Örn. 128500" required></label>
+  <button type="submit">＋ Aracımı garaja ekle</button>
+ </form>
+ </section>
+ <div class="sectionhead"><h2>Bakım takibim</h2><span class="sub" id="selectedName">Önce araç ekle</span></div>
+ <section class="grid" id="metrics">
+  <div class="card"><div class="icon">🛢️</div><div class="metric" id="nextDate">—</div><div class="label">En yakın bakım tarihi</div></div>
+  <div class="card"><div class="icon">🧭</div><div class="metric" id="nextKm">—</div><div class="label">Bakım kilometresi</div></div>
+ </section>
+ <div class="sectionhead"><h2>Bakım kaydı oluştur</h2><span class="sub">Tarih ve kilometre bazlı</span></div>
+ <section class="card">
+ <form id="serviceForm">
+  <label>Bakım türü<select id="serviceType"><option>Motor yağı ve yağ filtresi</option><option>Hava filtresi</option><option>Polen filtresi</option><option>Yakıt filtresi</option><option>Fren kontrolü</option><option>Lastik kontrolü</option><option>Akü kontrolü</option><option>Soğutma sıvısı</option><option>Diğer</option></select></label>
+  <div class="row"><label>Sonraki bakım tarihi<input id="dueDate" type="date" required></label><label>Sonraki bakım km<input id="dueKm" type="number" min="0" placeholder="Örn. 135000"></label></div>
+  <button type="submit">＋ Bakım hatırlatması ekle</button>
+ </form>
+ </section>
+ <div class="sectionhead"><h2>Yaklaşan bakımlar</h2><span class="sub">Seçili aracın kayıtları</span></div>
+ <section class="card"><div id="records" class="empty">Henüz bakım kaydı yok.</div></section>
+ <p class="notice">Önemli: Bu uygulama bir takip aracıdır; üretici bakım planının veya uzman kontrolünün yerine geçmez. Doğru yağ, sıvı, parça ve bakım aralıkları aracın tam motor koduna ve üretici bilgilerine göre doğrulanmalıdır. Veriler bu tarayıcıda saklanır; tarayıcı verilerini silersen kayıtların kaybolabilir.</p>
+</div>
+<script>
+const catalog={
+"BMW":{"1 Serisi":["116i","118i","120i","116d","118d","120d"],"2 Serisi":["218i","220i","220d","M240i"],"3 Serisi":["316i","318i","320i","320d","330i","330d","M340i"],"4 Serisi":["420i","430i","420d","M440i"],"5 Serisi":["520i","520d","530i","530d","540i","M550i"],"X1":["sDrive18i","sDrive18d","xDrive20i","xDrive20d"],"X3":["xDrive20i","xDrive20d","xDrive30i","xDrive30d"]},
+"Renault":{"Clio":["1.0 TCe","1.3 TCe","1.5 dCi","1.0 SCe"],"Megane":["1.3 TCe","1.5 dCi","1.6 16V","1.6 dCi"],"Symbol":["1.2 16V","1.5 dCi"],"Captur":["1.0 TCe","1.3 TCe","1.5 dCi"]},
+"Volkswagen":{"Polo":["1.0 MPI","1.0 TSI","1.2 TSI","1.4 TDI","1.6 TDI"],"Golf":["1.0 TSI","1.4 TSI","1.5 TSI","1.6 TDI","2.0 TDI","GTI"],"Passat":["1.4 TSI","1.5 TSI","1.6 TDI","2.0 TDI"],"Tiguan":["1.5 TSI","2.0 TDI"]},
+"Fiat":{"Egea":["1.4 Fire","1.3 Multijet","1.6 Multijet","1.0 FireFly"],"Linea":["1.4 Fire","1.3 Multijet","1.6 Multijet"],"Punto":["1.2 Fire","1.3 Multijet"]},
+"Toyota":{"Corolla":["1.33 VVT-i","1.6 Valvematic","1.5 Hybrid","1.8 Hybrid","1.4 D-4D"],"Yaris":["1.0 VVT-i","1.5 Hybrid","1.4 D-4D"],"Auris":["1.6 Valvematic","1.8 Hybrid","1.4 D-4D"],"C-HR":["1.8 Hybrid","2.0 Hybrid"]},
+"Ford":{"Focus":["1.0 EcoBoost","1.5 EcoBoost","1.5 TDCi","1.6 TDCi","2.0 TDCi"],"Fiesta":["1.0 EcoBoost","1.25 Duratec","1.4 TDCi","1.5 TDCi"],"Courier":["1.5 TDCi","1.0 EcoBoost"]},
+"Mercedes-Benz":{"A Serisi":["A180","A200","A220d"],"C Serisi":["C180","C200","C220d","C300"],"E Serisi":["E200","E220d","E300","E350d"],"GLA":["GLA 200","GLA 220d"]},
+"Peugeot":{"208":["1.2 PureTech","1.5 BlueHDi","e-208"],"301":["1.2 PureTech","1.6 HDi"],"308":["1.2 PureTech","1.5 BlueHDi","1.6 BlueHDi"],"3008":["1.2 PureTech","1.5 BlueHDi","1.6 Hybrid"]},
+"Opel":{"Corsa":["1.2","1.4","1.5 Diesel","1.2 Turbo"],"Astra":["1.4 Turbo","1.6 CDTi","1.2 Turbo","1.5 Diesel"],"Insignia":["1.5 Turbo","2.0 CDTi"]},
+"Hyundai":{"i20":["1.2 MPI","1.0 T-GDI","1.4 CRDi"],"i30":["1.4 MPI","1.0 T-GDI","1.6 CRDi"],"Tucson":["1.6 GDI","1.6 T-GDI","1.6 CRDi","1.6 Hybrid"]},
+"Honda":{"Civic":["1.6 i-VTEC","1.5 VTEC Turbo","1.6 i-DTEC","2.0 e:HEV"],"Jazz":["1.3 i-VTEC","1.5 e:HEV"],"CR-V":["1.5 VTEC Turbo","2.0 Hybrid"]}
+};
+const $=id=>document.getElementById(id);let vehicles=JSON.parse(localStorage.getItem("abr_vehicles")||"[]"),selected=localStorage.getItem("abr_selected")||"",records=JSON.parse(localStorage.getItem("abr_records")||"{}");
+function save(){localStorage.setItem("abr_vehicles",JSON.stringify(vehicles));localStorage.setItem("abr_selected",selected);localStorage.setItem("abr_records",JSON.stringify(records))}
+function fill(sel,items,placeholder){sel.innerHTML=`<option value="">${placeholder}</option>`;items.forEach(x=>sel.add(new Option(x,x)))}
+fill($("make"),Object.keys(catalog).sort(),"Marka seç");
+$("make").onchange=()=>{fill($("model"),Object.keys(catalog[$("make").value]||{}),"Model serisi seç");$("model").disabled=!$("make").value;$("trim").disabled=true;fill($("trim"),[],"Önce model seç")};
+$("model").onchange=()=>{fill($("trim"),catalog[$("make").value]?.[$("model").value]||[],"Motor / versiyon seç");$("trim").disabled=false};
+function current(){return vehicles.find(v=>v.id===selected)}
+function render(){ $("vehicleCount").textContent=vehicles.length+" araç";$("vehicleList").innerHTML=vehicles.length?vehicles.map(v=>`<div class="card vehicle"><div><div class="sub">${v.make} · ${v.year}</div><h3>${v.model} ${v.trim}</h3><p>${Number(v.km).toLocaleString("tr-TR")} km · ${v.fuel}</p></div><button class="${v.id===selected?"":"secondary"}" onclick="choose('${v.id}')">${v.id===selected?"Seçili":"Seç"}</button></div>`).join(""):`<div class="card empty">Garajın henüz boş. İlk aracını ekleyerek başla.</div>`;
+let v=current();$("selectedName").textContent=v?`${v.make} ${v.model} ${v.trim}`:"Önce araç ekle";let arr=v?(records[v.id]||[]):[];let future=arr.filter(r=>r.date).sort((a,b)=>a.date.localeCompare(b.date))[0];$("nextDate").textContent=future?new Date(future.date+"T00:00:00").toLocaleDateString("tr-TR"):"—";let kmrec=arr.filter(r=>r.km).sort((a,b)=>a.km-b.km)[0];$("nextKm").textContent=kmrec?Number(kmrec.km).toLocaleString("tr-TR"):"—";
+$("records").innerHTML=arr.length?arr.map((r,i)=>{let days=r.date?Math.ceil((new Date(r.date+"T00:00:00")-new Date(new Date().toDateString()))/86400000):null;let cls=days!==null&&days<0?"late":days!==null&&days<=30?"soon":"ok";let status=days===null?"Takipte":days<0?"Tarihi geçti":days<=30?`${days} gün kaldı`:"Planlandı";return `<div class="record"><div><b>${r.type}</b><small>${r.date?new Date(r.date+"T00:00:00").toLocaleDateString("tr-TR"):"Tarih yok"} · ${r.km?Number(r.km).toLocaleString("tr-TR")+" km":"Km belirtilmedi"}</small></div><span class="status ${cls}">${status}</span></div>`}).join(""):`<div class="empty">Henüz bakım kaydı yok. İlk hatırlatmanı ekleyebilirsin.</div>`}
+function choose(id){selected=id;save();render()}
+$("vehicleForm").onsubmit=e=>{e.preventDefault();let v={id:Date.now().toString(),make:$("make").value,model:$("model").value,trim:$("trim").value,year:$("year").value,fuel:$("fuel").value,km:$("km").value};vehicles.push(v);selected=v.id;save();e.target.reset();$("model").disabled=true;$("trim").disabled=true;render()};
+$("serviceForm").onsubmit=e=>{e.preventDefault();let v=current();if(!v){alert("Önce garaja araç ekle.");return}records[v.id]=records[v.id]||[];records[v.id].push({type:$("serviceType").value,date:$("dueDate").value,km:$("dueKm").value});save();e.target.reset();render()};
+render();
+</script>
+</body></html>
